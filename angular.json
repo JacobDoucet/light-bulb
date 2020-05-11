@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "light-bulb"
+    }
+  },
+  "defaultProject": "light-bulb",
+  "cli": {
+    "analytics": "02277fac-f1e7-45cb-a1b6-2cfd6ed94b31"
+  }
 }
