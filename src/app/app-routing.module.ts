@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { StateGuard } from './state.guard';
-import { ChildOnlyGuard } from './child-only.guard';
+import { StateGuard } from './guards/state.guard';
+import { ChildOnlyGuard } from './guards/child-only.guard';
 
 const routes: Routes = [
   {
