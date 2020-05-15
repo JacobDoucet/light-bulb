@@ -11,11 +11,12 @@ import { tap } from 'rxjs/internal/operators/tap';
 })
 export class LightSwitchComponent implements OnInit {
 
-  state$: Observable<string> = this.route.params.pipe(
+  state$: Observable<'on' | 'off'> = this.route.params.pipe(
     map((params) => params.state)
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private route: ActivatedRoute, private router: Router) {
+  }
 
   ngOnInit(): void {
   }
@@ -29,16 +30,10 @@ export class LightSwitchComponent implements OnInit {
 
   private doFlipSwitch(state: string) {
     state = state === 'on' ? 'off' : 'on';
-    if (!window.opener) {
-      this.router.navigate([
-        { outlets: { bulb: state, switch: state } }
-      ]);
-    } else {
-      this.router.navigate([
-        { outlets: { switch: state } }
-      ]);
-      window.opener.postMessage(`${state}`, '*');
-    }
+    this.router.navigate([
+      { outlets: { switch: state } }
+    ]);
+    window.opener.postMessage(`${state}`, '*');
   }
 
 }

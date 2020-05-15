@@ -11,28 +11,50 @@ import { tap } from 'rxjs/internal/operators/tap';
 })
 export class LightBulbComponent implements OnInit {
 
-  state$: Observable<string> = this.route.params.pipe(
+  childWindow: Window;
+
+  state$: Observable<'on' | 'off'> = this.route.params.pipe(
     map((params) => params.state)
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
-
-  ngOnInit(): void {
-    this.state$.pipe(
-      take(1),
-      tap((state) => this.openPopupWindow(state))
-    ).subscribe();
+  constructor(private route: ActivatedRoute, private router: Router) {
   }
 
-  private openPopupWindow(state: string) {
-    window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
+  ngOnInit(): void {
+  }
+
+  togglePopupWindow() {
+    if (this.childWindow) {
+      this.childWindow.close();
+    } else {
+      this.state$.pipe(
+        take(1),
+        tap((state) => this.doOpenPopupWindow(state))
+      ).subscribe();
+    }
+  }
+
+  private doOpenPopupWindow(state: string) {
+    this.childWindow = window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
+
     window.addEventListener('message', (event: MessageEvent) => {
       if (event.data && /^(on|off)$/.test(event.data)) {
         this.router.navigate([
-          { outlets: { bulb: event.data }}
+          { outlets: { bulb: event.data } }
         ]);
       }
     });
+
+    this.startChildWindowChecks();
+  }
+
+  private startChildWindowChecks() {
+    const interval = setInterval(() => {
+      if (this.childWindow.closed) {
+        this.childWindow = null;
+        clearInterval(interval);
+      }
+    }, 500);
   }
 
 }
