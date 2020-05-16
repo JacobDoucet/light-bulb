@@ -1,3 +1,3 @@
-<app-light-bulb-ui [state]="state$ | async"></app-light-bulb-ui>
+<div class="bulb" [class.bulb-on]="(state$ | async) === 'on'"></div>
 
-<button (click)="togglePopupWindow()">{{ childWindow ? 'Close' : 'Open' }} Switch</button>
+<button (click)="togglePopupWindow()">{{ popupWindow ? 'Close' : 'Open' }} Light Switch</button>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { fromEvent, Observable, Subject } from 'rxjs';
+import { map, take, takeUntil } from 'rxjs/operators';
 import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
@@ -11,7 +11,9 @@ import { tap } from 'rxjs/internal/operators/tap';
 })
 export class LightBulbComponent implements OnInit {
 
-  childWindow: Window;
+  private popupClosed: Subject<void> = new Subject();
+
+  popupWindow: Window;
 
   state$: Observable<'on' | 'off'> = this.route.params.pipe(
     map((params) => params.state)
@@ -24,34 +26,36 @@ export class LightBulbComponent implements OnInit {
   }
 
   togglePopupWindow() {
-    if (this.childWindow) {
-      this.childWindow.close();
-    } else {
+    if (!this.popupWindow) {
       this.state$.pipe(
         take(1),
-        tap((state) => this.doOpenPopupWindow(state))
+        tap((state) => this.openPopupWindow(state))
       ).subscribe();
+    } else {
+      this.popupWindow.close();
     }
   }
 
-  private doOpenPopupWindow(state: string) {
-    this.childWindow = window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
-
-    window.addEventListener('message', (event: MessageEvent) => {
-      if (event.data && /^(on|off)$/.test(event.data)) {
-        this.router.navigate([
-          { outlets: { bulb: event.data } }
-        ]);
-      }
-    });
-
-    this.startChildWindowChecks();
+  private openPopupWindow(state: string) {
+    this.popupWindow = window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
+    this.startCheckingPopupWindow();
+    fromEvent(window, 'message').pipe(
+      takeUntil(this.popupClosed),
+      tap((event: MessageEvent) => {
+        if (event.data && /^(on|off)$/.test(event.data)) {
+          this.router.navigate([
+            { outlets: { bulb: event.data } }
+          ]);
+        }
+      })
+    ).subscribe();
   }
 
-  private startChildWindowChecks() {
+  private startCheckingPopupWindow() {
     const interval = setInterval(() => {
-      if (this.childWindow.closed) {
-        this.childWindow = null;
+      if (this.popupWindow.closed) {
+        this.popupClosed.next();
+        this.popupWindow = null;
         clearInterval(interval);
       }
     }, 500);

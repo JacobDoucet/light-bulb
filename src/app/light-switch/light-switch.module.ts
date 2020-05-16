@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 
 import { LightSwitchRoutingModule } from './light-switch-routing.module';
 import { LightSwitchComponent } from './light-switch.component';
-import { LightSwitchUiComponent } from './light-switch-ui/light-switch-ui.component';
 
 
 @NgModule({
-  declarations: [LightSwitchComponent, LightSwitchUiComponent],
+  declarations: [LightSwitchComponent],
   imports: [
     CommonModule,
     LightSwitchRoutingModule
   ]
 })
-export class LightSwitchModule { }
+export class LightSwitchModule {
+}
