@@ -1,20 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { StateGuard } from './guards/state.guard';
-import { ChildOnlyGuard } from './guards/child-only.guard';
 
 const routes: Routes = [
   {
     path: ':state',
     outlet: 'bulb',
-    loadChildren: () => import('./light-bulb/light-bulb.module').then(m => m.LightBulbModule),
-    canLoad: [ StateGuard ]
+    loadChildren: () => import('./light-bulb/light-bulb.module').then(m => m.LightBulbModule)
   },
   {
     path: ':state',
     outlet: 'switch',
-    loadChildren: () => import('./light-switch/light-switch.module').then(m => m.LightSwitchModule),
-    canLoad: [ ChildOnlyGuard ]
+    loadChildren: () => import('./light-switch/light-switch.module').then(m => m.LightSwitchModule)
   }
 ];
 
