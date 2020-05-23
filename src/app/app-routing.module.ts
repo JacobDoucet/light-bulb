@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { StateGuard } from './guards/state.guard';
-import { ChildOnlyGuard } from './guards/child-only.guard';
+import { PopupGuard } from './guards/popup.guard';
 
 const routes: Routes = [
   {
@@ -14,7 +14,7 @@ const routes: Routes = [
     path: ':state',
     outlet: 'switch',
     loadChildren: () => import('./light-switch/light-switch.module').then(m => m.LightSwitchModule),
-    canLoad: [ ChildOnlyGuard ]
+    canLoad: [ PopupGuard ]
   }
 ];
 

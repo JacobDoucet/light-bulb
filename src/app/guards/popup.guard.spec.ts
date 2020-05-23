@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ChildOnlyGuard } from './child-only.guard';
+import { PopupGuard } from './popup.guard';
 
 describe('ChildOnlyGuard', () => {
-  let guard: ChildOnlyGuard;
+  let guard: PopupGuard;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    guard = TestBed.inject(ChildOnlyGuard);
+    guard = TestBed.inject(PopupGuard);
   });
 
   it('should be created', () => {

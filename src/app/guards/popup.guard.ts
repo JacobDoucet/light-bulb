@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ChildOnlyGuard implements CanLoad {
+export class PopupGuard implements CanLoad {
 
   constructor(private router: Router) {
   }
