@@ -38,7 +38,10 @@ export class LightBulbComponent implements OnInit {
 
   private openPopupWindow(state: string) {
     this.popupWindow = window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
-    this.startCheckingPopupWindow();
+    this.popupWindow.onbeforeunload = () => {
+      this.popupClosed.next();
+      this.popupWindow = null;
+    };
     fromEvent(window, 'message').pipe(
       takeUntil(this.popupClosed),
       tap((event: MessageEvent) => {
@@ -50,15 +53,4 @@ export class LightBulbComponent implements OnInit {
       })
     ).subscribe();
   }
-
-  private startCheckingPopupWindow() {
-    const interval = setInterval(() => {
-      if (this.popupWindow.closed) {
-        this.popupClosed.next();
-        this.popupWindow = null;
-        clearInterval(interval);
-      }
-    }, 500);
-  }
-
 }
