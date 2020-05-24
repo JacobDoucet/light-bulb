@@ -5,11 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
-  selector: 'app-light-switch',
-  templateUrl: './light-switch.component.html',
-  styleUrls: ['./light-switch.component.css']
+  selector: 'app-popup',
+  templateUrl: './popup.component.html',
+  styleUrls: ['./popup.component.css']
 })
-export class LightSwitchComponent implements OnInit {
+export class PopupComponent implements OnInit {
 
   state$: Observable<'on' | 'off'> = this.route.params.pipe(
     map((params) => params.state)

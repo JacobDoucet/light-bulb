@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import { tap } from 'rxjs/internal/operators/tap';
 
 @Component({
-  selector: 'app-light-bulb',
-  templateUrl: './light-bulb.component.html',
-  styleUrls: ['./light-bulb.component.css']
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.css']
 })
-export class LightBulbComponent implements OnInit {
+export class MainComponent implements OnInit {
 
   private popupClosed: Subject<void> = new Subject();
 
@@ -19,7 +19,7 @@ export class LightBulbComponent implements OnInit {
     map((params) => params.state)
   );
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute, private router: Router, private cd: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -38,7 +38,13 @@ export class LightBulbComponent implements OnInit {
 
   private openPopupWindow(state: string) {
     this.popupWindow = window.open(`http://localhost:4200/(switch:${state})`, '__blank', 'height=100px,width=300px');
-    this.startCheckingPopupWindow();
+
+    this.popupWindow.onbeforeunload = () => {
+      this.popupClosed.next();
+      this.popupWindow = null;
+      this.cd.detectChanges();
+    };
+
     fromEvent(window, 'message').pipe(
       takeUntil(this.popupClosed),
       tap((event: MessageEvent) => {
@@ -49,16 +55,6 @@ export class LightBulbComponent implements OnInit {
         }
       })
     ).subscribe();
-  }
-
-  private startCheckingPopupWindow() {
-    const interval = setInterval(() => {
-      if (this.popupWindow.closed) {
-        this.popupClosed.next();
-        this.popupWindow = null;
-        clearInterval(interval);
-      }
-    }, 500);
   }
 
 }

@@ -7,14 +7,18 @@ const routes: Routes = [
   {
     path: ':state',
     outlet: 'bulb',
-    loadChildren: () => import('./light-bulb/light-bulb.module').then(m => m.LightBulbModule),
+    loadChildren: () => import('./routes/main/main.module').then(m => m.MainModule),
     canLoad: [ StateGuard ]
   },
   {
     path: ':state',
     outlet: 'switch',
-    loadChildren: () => import('./light-switch/light-switch.module').then(m => m.LightSwitchModule),
+    loadChildren: () => import('./routes/popup/popup.module').then(m => m.PopupModule),
     canLoad: [ PopupGuard ]
+  },
+  {
+    path: '**',
+    redirectTo: '/(bulb:off)'
   }
 ];
 

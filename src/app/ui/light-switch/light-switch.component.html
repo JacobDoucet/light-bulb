@@ -1,0 +1,4 @@
+<div class="switch-container" (click)="stateChange.emit()">
+  <div class="switch-piece" [class.active]="state ==='on'"></div>
+  <div class="switch-piece" [class.active]="state ==='off'"></div>
+</div>
